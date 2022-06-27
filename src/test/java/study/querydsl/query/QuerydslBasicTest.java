@@ -16,14 +16,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-public class QuerydslBasicTest {
+public class MemberTest {
     @PersistenceContext
     EntityManager em;
 
-    JPAQueryFactory queryFactory;
     @BeforeEach
     public void before() {
-        queryFactory = new JPAQueryFactory(em);
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
         em.persist(teamA);
@@ -39,13 +37,14 @@ public class QuerydslBasicTest {
     }
 
     @Test
-    void startQueryDsl() {
-        QMember m = new QMember("m");
+    public void startQuerydsl() {
+        //member1을 찾아라.
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         Member findMember = queryFactory
-                .selectFrom(m)
-                .where(m.username.eq("member1"))
+                .select(member)
+                .from(member)
+                .where(member.username.eq("member1"))//파라미터 바인딩 처리
                 .fetchOne();
-
         assertThat(findMember.getUsername()).isEqualTo("member1");
     }
 
